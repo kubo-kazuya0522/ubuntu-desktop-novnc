@@ -10,6 +10,6 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "postCreateCommand": "chmod +x start-vnc.sh",
-  "postStartCommand": "bash start-vnc.sh"
+  "postCreateCommand": "chmod +x /home/vscode/start-vnc.sh",
+  "postStartCommand": "bash /home/vscode/start-vnc.sh"
 }

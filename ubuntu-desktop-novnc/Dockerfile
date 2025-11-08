@@ -7,10 +7,11 @@ ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:ja
 ENV LC_ALL=ja_JP.UTF-8
 
-# 基本ツール・Xfce4・VNC・noVNC のインストール
+# 基本ツール・XFCE4・VNC・noVNC のインストール
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y sudo vim curl git locales xfce4 xfce4-goodies xterm dbus-x11 \
-    tigervnc-standalone-server python3 python3-pip wget && \
+    tigervnc-standalone-server tigervnc-tools python3 python3-pip wget \
+    fonts-ipafont ibus-mozc && \
     locale-gen ja_JP.UTF-8 && update-locale LANG=ja_JP.UTF-8 && \
     rm -rf /var/lib/apt/lists/*
 
@@ -25,8 +26,12 @@ WORKDIR /home/vscode
 RUN git clone https://github.com/novnc/noVNC.git ~/noVNC && \
     git clone https://github.com/novnc/websockify.git ~/noVNC/utils/websockify
 
+# 起動スクリプトをコピー
+COPY start-vnc.sh /home/vscode/start-vnc.sh
+RUN chmod +x /home/vscode/start-vnc.sh
+
 # noVNC 用ポート
 EXPOSE 6080
 
 # コンテナ起動時に VNC + noVNC を起動
-CMD ["bash", "start-vnc.sh"]
+CMD ["bash", "/home/vscode/start-vnc.sh"]

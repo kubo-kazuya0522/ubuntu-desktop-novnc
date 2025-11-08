@@ -1,7 +1,7 @@
 {
   "name": "Ubuntu Desktop with noVNC",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "ubuntu-desktop-novnc/Dockerfile"
   },
   "forwardPorts": [6080],
   "portsAttributes": {

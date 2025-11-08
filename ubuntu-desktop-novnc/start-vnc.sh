@@ -3,29 +3,26 @@ set -e
 
 export DISPLAY=:1
 export LANG=ja_JP.UTF-8
+export LC_ALL=ja_JP.UTF-8
 
-# VNC パスワード設定
+# VNCパスワード設定
 mkdir -p ~/.vnc
 echo "vncpass" | vncpasswd -f > ~/.vnc/passwd
 chmod 600 ~/.vnc/passwd
 
-# 古い VNC セッションを終了
+# 古いVNCセッションを終了
 vncserver -kill :1 || true
 
-# xstartup を作成
-cat > ~/.vnc/xstartup <<'EOF'
-#!/bin/sh
-unset SESSION_MANAGER
-unset DBUS_SESSION_BUS_ADDRESS
-[ -x /usr/bin/startxfce4 ] && startxfce4 &
-EOF
+# XFCE4デスクトップをVNC経由で起動
+echo "#!/bin/sh" > ~/.vnc/xstartup
+echo "unset SESSION_MANAGER" >> ~/.vnc/xstartup
+echo "unset DBUS_SESSION_BUS_ADDRESS" >> ~/.vnc/xstartup
+echo "startxfce4 &" >> ~/.vnc/xstartup
 chmod +x ~/.vnc/xstartup
 
-# VNC サーバ起動
+# VNCサーバ起動
 vncserver :1 -geometry 1280x800 -depth 24
 
-# noVNC サーバ起動（バックグラウンド）
-websockify --web=/usr/share/novnc/ 6080 localhost:5901 &
-echo "✅ VNC & noVNC サーバ起動完了 → http://localhost:6080/"
-# プロセスを終了させないように無限ループで待機
-tail -f /dev/null
+# noVNCサーバ起動
+echo "✅ noVNCサーバ起動中 → http://localhost:6080/"
+websockify --web=/usr/share/novnc/ 6080 localhost:5901

@@ -11,5 +11,18 @@
     }
   },
   "postCreateCommand": "chmod +x /home/vscode/start-vnc.sh",
-  "postStartCommand": "bash /home/vscode/start-vnc.sh"
+  "remoteUser": "vscode",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind,consistency=cached"
+  ],
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode.cpptools",
+        "ms-python.python"
+      ]
+    }
+  }
 }

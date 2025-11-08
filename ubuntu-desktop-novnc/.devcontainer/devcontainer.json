@@ -10,5 +10,5 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "postCreateCommand": "chmod +x start-vnc.sh && bash start-vnc.sh"
+  "postCreateCommand": "chmod +x start-vnc.sh"
 }

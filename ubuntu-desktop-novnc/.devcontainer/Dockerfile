@@ -19,5 +19,7 @@ ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:ja
 ENV LC_ALL=ja_JP.UTF-8
 
-EXPOSE 6080
-CMD [ "bash", "start-vnc.sh" ]
+EXPOSE 5901 6080
+
+# コンテナ起動時に VNC と noVNC を起動
+CMD ["bash", "start-vnc.sh"]

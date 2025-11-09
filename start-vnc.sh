@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-setxkbmap jp
-
 # デフォルト VNC パスワード
 VNC_PASS=${VNC_PASS:-vscode}
 
@@ -23,6 +21,10 @@ fi
 # XFCE4 デスクトップ起動
 echo "Starting VNC server..."
 vncserver :1 -geometry 1920x1080 -depth 24 -fg
+
+# DISPLAY を設定して日本語キーボード
+export DISPLAY=:1
+setxkbmap jp
 
 # 何かトラブル時にログ確認
 echo "VNC server started on display :1"

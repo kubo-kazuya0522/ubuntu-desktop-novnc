@@ -1,26 +1,22 @@
 # ベースイメージ
 FROM ubuntu:22.04
 
-# 非対話モードに設定
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 基本ツールと VNC, XFCE4 デスクトップをインストール
+# 基本ツール・VNC・XFCE4・日本語対応
 RUN apt-get update && apt-get install -y \
-    tigervnc-standalone-server \
-    tigervnc-common \
+    tigervnc-standalone-server tigervnc-common \
     xfce4 xfce4-terminal \
-    wget curl sudo git \
-    console-setup keyboard-configuration \
+    wget curl sudo git python3 python3-websockify \
     locales \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ロケール設定
-RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
+RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
-ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-# 日本語キーボード設定（非対話）
+# 日本語キーボード設定
 RUN echo 'keyboard-configuration  keyboard-configuration/layoutcode  select  jp' | debconf-set-selections && \
     echo 'keyboard-configuration  keyboard-configuration/modelcode   select  pc105' | debconf-set-selections && \
     echo 'keyboard-configuration  keyboard-configuration/variantcode select  Japanese' | debconf-set-selections && \
@@ -32,9 +28,13 @@ RUN useradd -m -s /bin/bash vscode || true
 USER vscode
 WORKDIR /home/vscode
 
-# start-vnc.sh をコピーして権限付与
+# noVNC の取得
+RUN git clone https://github.com/novnc/noVNC.git /home/vscode/noVNC && \
+    git clone https://github.com/novnc/websockify /home/vscode/noVNC/utils/websockify
+
+# start-vnc.sh をコピー
 COPY --chown=vscode:vscode start-vnc.sh /home/vscode/start-vnc.sh
 RUN chmod +x /home/vscode/start-vnc.sh
 
-# コンテナ起動時に自動で VNC 起動
+# コンテナ起動時に自動で VNC + noVNC 起動
 CMD ["/home/vscode/start-vnc.sh"]

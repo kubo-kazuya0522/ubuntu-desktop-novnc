@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e
 
-# locale 設定
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US:en
-export LC_ALL=en_US.UTF-8
-
 # デフォルト VNC パスワード
 VNC_PASS=${VNC_PASS:-vscode}
 
@@ -13,22 +8,29 @@ VNC_PASS=${VNC_PASS:-vscode}
 mkdir -p /home/vscode/.vnc
 chmod 700 /home/vscode/.vnc
 
-# パスワードを設定
+# パスワード設定
 echo "$VNC_PASS" | vncpasswd -f > /home/vscode/.vnc/passwd
 chmod 600 /home/vscode/.vnc/passwd
 
-# 既存の VNC サーバーがあれば停止
-if pgrep Xtightvnc > /dev/null; then
-    echo "Stopping existing VNC server..."
-    vncserver -kill :1 || true
-fi
+# 既存 VNC サーバーを停止
+vncserver -kill :1 || true
+pkill Xtigervnc || true
 
-# XFCE4 デスクトップ起動
-echo "Starting VNC server..."
-vncserver :1 -geometry 1920x1080 -depth 24 -fg
+# xstartup 作成
+cat << 'EOF' > /home/vscode/.vnc/xstartup
+#!/bin/sh
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+startxfce4
+EOF
+chmod +x /home/vscode/.vnc/xstartup
 
-# 日本語キーボード設定
-DISPLAY=:1 setxkbmap jp || true
+# VNC サーバー起動
+vncserver :1 -geometry 1920x1080 -depth 24
 
-echo "VNC server started on display :1"
-echo "Connect via noVNC at http://localhost:6080"
+# noVNC 起動（ポート 6080 でブラウザアクセス）
+/home/vscode/noVNC/utils/novnc_proxy --vnc localhost:5901 --listen 6080 &
+
+echo "VNC server started on display :1 (port 5901)"
+echo "noVNC available at http://localhost:6080"
+wait

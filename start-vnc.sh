@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+# ロケール設定
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
+export LC_ALL=en_US.UTF-8
+
+# 日本語キーボード
+setxkbmap jp || true
+
 # デフォルト VNC パスワード
 VNC_PASS=${VNC_PASS:-vscode}
 
@@ -8,24 +16,16 @@ VNC_PASS=${VNC_PASS:-vscode}
 mkdir -p /home/vscode/.vnc
 chmod 700 /home/vscode/.vnc
 
-# パスワードを設定
+# パスワード設定
 echo "$VNC_PASS" | vncpasswd -f > /home/vscode/.vnc/passwd
 chmod 600 /home/vscode/.vnc/passwd
 
-# 既存の VNC サーバーがあれば停止
-if pgrep Xtightvnc > /dev/null; then
-    echo "Stopping existing VNC server..."
-    vncserver -kill :1 || true
-fi
+# 既存の VNC サーバーを強制停止
+vncserver -kill :1 || true
 
 # XFCE4 デスクトップ起動
 echo "Starting VNC server..."
 vncserver :1 -geometry 1920x1080 -depth 24 -fg
 
-# DISPLAY を設定して日本語キーボード
-export DISPLAY=:1
-setxkbmap jp
-
-# 何かトラブル時にログ確認
 echo "VNC server started on display :1"
 echo "Connect via noVNC at http://localhost:6080"

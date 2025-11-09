@@ -10,6 +10,6 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "postCreateCommand": "chmod +x /home/vscode/start-vnc.sh",
+  "postCreateCommand": "chmod +x /workspaces/ubuntu-desktop-novnc/start-vnc.sh",
   "remoteUser": "vscode"
 }

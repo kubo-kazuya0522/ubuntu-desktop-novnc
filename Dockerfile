@@ -3,6 +3,9 @@ FROM ubuntu:22.04
 
 # 非対話モードに設定
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 # 基本ツールと VNC, XFCE4 デスクトップをインストール
 RUN apt-get update && apt-get install -y \
@@ -11,7 +14,13 @@ RUN apt-get update && apt-get install -y \
     xfce4 xfce4-terminal \
     wget curl sudo git \
     console-setup keyboard-configuration \
+    locales \
+    xauth \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ロケール生成
+RUN locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8
 
 # 日本語キーボード設定（非対話）
 RUN echo 'keyboard-configuration  keyboard-configuration/layoutcode  select  jp' | debconf-set-selections && \

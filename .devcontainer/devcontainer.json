@@ -1,0 +1,15 @@
+{
+  "name": "Ubuntu Desktop with noVNC",
+  "build": {
+    "dockerfile": "../Dockerfile"
+  },
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": {
+      "label": "noVNC Desktop",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "chmod +x /home/vscode/start-vnc.sh",
+  "remoteUser": "vscode"
+}

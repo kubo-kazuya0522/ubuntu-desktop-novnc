@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+setxkbmap jp
+
 # デフォルト VNC パスワード
 VNC_PASS=${VNC_PASS:-vscode}
 
